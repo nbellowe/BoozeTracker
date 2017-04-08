@@ -10,5 +10,6 @@ export class HomePage {
   constructor(public navCtrl: NavController) {
 
   }
+  currentPercent = 1
 
 }
