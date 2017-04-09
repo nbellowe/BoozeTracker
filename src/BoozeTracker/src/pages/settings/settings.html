@@ -6,9 +6,9 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content fixed>
+<ion-content>
 
-  <ion-list no-border>
+  <ion-list>
 
     <ion-list-header>
       User Settings
@@ -17,7 +17,7 @@
     <ion-item>
       <ion-icon name='flask' item-left></ion-icon>
       <ion-label>Gender</ion-label>
-      <ion-select item-right [(ngModel)]="gender">
+      <ion-select item-right [(ngModel)]="gender" (ionChange)="changed()">
         <ion-option value="male">Male</ion-option>
         <ion-option value="female">Female</ion-option>
         <ion-option value="other">Other</ion-option>
@@ -27,13 +27,13 @@
     <ion-item>
       <ion-icon name='planet' item-left></ion-icon>
       <ion-label> Height </ion-label>
-      <ion-select [(ngModel)]="heightft">
+      <ion-select [(ngModel)]="heightft" (ionChange)="changed()">
         <ion-option value="4">4 ft</ion-option>
         <ion-option value="5">5 ft</ion-option>
         <ion-option value="6">6 ft</ion-option>
       </ion-select>
-      
-      <ion-select [(ngModel)]="heightin">
+
+      <ion-select [(ngModel)]="heightin" (ionChange)="changed()">
         <ion-option value="0">0 in</ion-option>
         <ion-option value="1">1 in</ion-option>
         <ion-option value="2">2 in</ion-option>
@@ -52,7 +52,7 @@
     <ion-item>
       <ion-icon name='body' item-left></ion-icon>
       <ion-label stacked>Weight</ion-label>
-      <ion-range min="90" max="300" pin="true" [(ngModel)]="weight">
+      <ion-range min="90" max="300" pin="true" [(ngModel)]="weight" (ionChange)="changed()">
         <ion-label range-left small name="weight">90</ion-label>
         <ion-label range-right name="weight">300</ion-label>
       </ion-range>
@@ -61,7 +61,7 @@
     <ion-item>
       <ion-icon name='leaf' item-left></ion-icon>
       <ion-label stacked>Age</ion-label>
-      <ion-range min="21" max="80" pin="true" [(ngModel)]="age">
+      <ion-range min="21" max="80" pin="true" [(ngModel)]="age" (ionChange)="changed()">
         <ion-label range-left small name="age">21</ion-label>
         <ion-label range-right name="age">80</ion-label>
       </ion-range>
@@ -74,10 +74,9 @@
     <ion-list-header>
       Disclaimer
     </ion-list-header>
-
-    <ion-item>
-      Don't use this...
-    </ion-item>
+    <ion-item text-wrap>
+    Don't use this... Don't use this...  Don't use this... Don't use this...  Don't use this... Don't use this...  Don't use this... Don't use this...  Don't use this... Don't use this...  Don't use this... Don't use this...  Don't use this... Don't use this...  Don't use this... Don't use this...  Don't use this... Don't use this...  Don't use this... Don't use this...  Don't use this... Don't use this...  Don't use this... Don't use this...  Don't use this... Don't use this...
+  </ion-item>
   </ion-list>
 
 

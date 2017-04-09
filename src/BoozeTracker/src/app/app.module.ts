@@ -11,7 +11,12 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-import { ChartsModule } from 'ng2-charts/ng2-charts';
+//3rd party angular modules
+import { ChartsModule } from 'ng2-charts/ng2-charts'; // add charts module
+
+//singletons in app
+import { DatabaseService, DrinkService } from '../services/databaseService';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -36,7 +41,9 @@ import { ChartsModule } from 'ng2-charts/ng2-charts';
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    DatabaseService,
+    DrinkService
   ]
 })
 export class AppModule {}

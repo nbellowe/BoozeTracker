@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import * as $ from "jquery";
+import { DrinkService } from "../../services/databaseService"
 
 @Component({
   selector: 'page-home',
@@ -20,38 +21,45 @@ export class HomePage implements OnInit {
   }
 
   setPercent(value, delay?){
+
+    let timeScale = Math.abs(this.lastPercent - value)
+
+    if(!delay) delay = 0;
+
+    if(value > this.lastPercent)
+      $('.pour')
+        .delay(timeScale*delay)
+        .animate({ height: '360px' }, timeScale*1500)
+        .delay(timeScale*1600)
+        .animate({ height: '0px' }, 1)
+
+    $('#liquid')
+      .delay(timeScale*(delay + 1650))
+      .animate({ height: Math.floor(290 * value) + 'px' }, timeScale*2500);
+
+    $('.beer-foam')
+      .delay(timeScale*(delay + 1400))
+      .animate({ bottom: Math.floor(300 * value) + 'px' }, timeScale*3000);
+
+    // don't allow changes until all animations are done
+    this.freezeChanges = true;
+    setTimeout(() => this.freezeChanges=false, timeScale*(delay+3000));
+
+    this.notification = this.lastPercent = value;
+  }
+
+  addDrink(){
     // dont change anything if freezeChanges is true
     if(this.freezeChanges) {
       console.log("Frozen from changes")
       return;
     }
 
-    if(!delay) delay = 0;
+    this.setPercent((this.lastPercent + .19) % 1) //cycle the percent
 
-    this.notification = this.lastPercent = value;
-    $('.pour') //Pour Me Another Drink, Bartender!
-      .delay(delay)
-      .animate({ height: '360px' }, 1500)
-      .delay(1600)
-      .slideUp(500);
-
-    $('#liquid') // I Said Fill 'Er Up!
-      .delay(delay + 1650)
-      .animate({ height: Math.floor(190 * value) + 'px' }, 2500);
-
-    $('.beer-foam') // Keep that Foam Rollin' Toward the Top! Yahooo!
-      .delay(delay + 1400)
-      .animate({ bottom: Math.floor(200 * value) + 'px' }, 3000);
-
-
-    // don't allow changes until all animations are done
-    this.freezeChanges = true;
-    setTimeout(() => this.freezeChanges=false, delay+3000);
+    this.drinkService.incrementToday()
   }
 
-  addDrink(){
-    this.setPercent((this.lastPercent + .2) % 1) //cycle the percent
-  }
-
-  constructor(public navCtrl: NavController) { }
+  constructor(public navCtrl: NavController,
+              public drinkService: DrinkService) { }
 }
