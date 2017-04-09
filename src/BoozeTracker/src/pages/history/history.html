@@ -9,8 +9,19 @@
 <ion-content padding>
   <h1>{{title}}</h1>
   <div class="history-placeholder">
-    <canvas baseChart height="300" [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+    <canvas
+      baseChart
+      height="300"
+      [datasets]="lineChartData"
+      [labels]="lineChartLabels"
+      [options]="lineChartOptions"
+      [colors]="lineChartColors"
+      [legend]="lineChartLegend"
+      [chartType]="lineChartType"
+      (chartHover)="chartHovered($event)"
+      (chartClick)="chartClicked($event)">
+    </canvas>
 
-    <button ion-button (click)="randomize()">Randomize</button>
+    <button ion-button class="centered-button" (click)="randomize()">Randomize</button>
   </div>
 </ion-content>

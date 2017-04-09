@@ -6,25 +6,22 @@ import { NavController } from 'ionic-angular';
   templateUrl: 'history.html'
 })
 export class HistoryPage {
-  title = "Drinks per day for 30 days"
+  title = ""
   constructor(public navCtrl: NavController) {
-    for (let i = 0; i < 30; i += 3) { // only label once every 3 days
-    }
-    for (let i = 0; i < 30; i++) {
-      this.lineChartLabels[i] = i + 1 // set label
-      this.lineChartData[0].data[i] = 1 + Math.floor(Math.random() * 5)
-    }
+    this.randomize();
   }
-  currentHistory = [1, 3, 4, 2, 5]
 
   // lineChart
   lineChartData: Array<any> = [
-    { data: [], label: 'Drinks per Day' },
+    { data: [], label: 'Drinks per Day for 30 days' },
   ];
-
   lineChartLabels: Array<any> = [];
   lineChartOptions: any = {
-    responsive: true
+    responsive: true,
+    scales: {
+      yAxes: [{ ticks: { max: 5, min: 0, stepSize: 1 } }],
+      xAxes: [{ ticks: { maxTicksLimit: 11 } }]
+    }
   };
   lineChartColors: Array<any> = [
     { // grey
@@ -56,14 +53,14 @@ export class HistoryPage {
   lineChartType: string = 'line';
 
   randomize(): void {
-    let _lineChartData: Array<any> = new Array(this.lineChartData.length);
-    for (let i = 0; i < this.lineChartData.length; i++) {
-      _lineChartData[i] = { data: new Array(this.lineChartData[i].data.length), label: this.lineChartData[i].label };
-      for (let j = 0; j < this.lineChartData[i].data.length; j++) {
-        _lineChartData[i].data[j] = Math.floor((Math.random() * 100) + 1);
-      }
+    this.lineChartData = [
+      { data: [], label: 'Drinks per Day for 30 days' },
+    ];
+    this.lineChartLabels = [];
+    for (let i = 0; i < 30; i++) {
+      this.lineChartLabels[i] = i + 1 // set label
+      this.lineChartData[0].data[i] = 1 + Math.floor(Math.random() * 5)
     }
-    this.lineChartData = _lineChartData;
   }
 
   // events

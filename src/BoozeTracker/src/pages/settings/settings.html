@@ -6,7 +6,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content>
+<ion-content fixed>
 
   <ion-list no-border>
 
@@ -18,7 +18,7 @@
       <ion-icon name='flask' item-left></ion-icon>
       <ion-label>Gender</ion-label>
       <ion-select item-right [(ngModel)]="gender">
-        <ion-option value="male" selected="true">Male</ion-option>
+        <ion-option value="male">Male</ion-option>
         <ion-option value="female">Female</ion-option>
         <ion-option value="other">Other</ion-option>
       </ion-select>
@@ -29,10 +29,12 @@
       <ion-label> Height </ion-label>
       <ion-select [(ngModel)]="heightft">
         <ion-option value="4">4 ft</ion-option>
-        <ion-option value="5" selected="true">5 ft</ion-option>
+        <ion-option value="5">5 ft</ion-option>
         <ion-option value="6">6 ft</ion-option>
       </ion-select>
+      
       <ion-select [(ngModel)]="heightin">
+        <ion-option value="0">0 in</ion-option>
         <ion-option value="1">1 in</ion-option>
         <ion-option value="2">2 in</ion-option>
         <ion-option value="3">3 in</ion-option>
@@ -42,9 +44,8 @@
         <ion-option value="7">7 in</ion-option>
         <ion-option value="8">8 in</ion-option>
         <ion-option value="9">9 in</ion-option>
-        <ion-option value="10" selected="true">10 in</ion-option>
+        <ion-option value="10">10 in</ion-option>
         <ion-option value="11">11 in</ion-option>
-        <ion-option value="12">12 in</ion-option>
       </ion-select>
     </ion-item>
 

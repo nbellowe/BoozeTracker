@@ -1,5 +1,5 @@
 page-history {
-
+    overflow: hidden;
 }
 
 .history-placeholder {
@@ -8,4 +8,5 @@ page-history {
     border-style: dotted;
     height: 100%;
     line-height: 150px;
+    padding-top: 20px;
 }
