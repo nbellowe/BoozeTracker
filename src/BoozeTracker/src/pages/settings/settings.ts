@@ -1,45 +1,49 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
-import { DatabaseService } from "../../services/databaseService"
+import { ConfigService, UserConfig } from "../../services/configService"
 
 @Component({
-  selector: 'page-settings',
-  templateUrl: 'settings.html'
+    selector: 'page-settings',
+    templateUrl: 'settings.html'
 })
 export class SettingsPage {
 
-  constructor(public navCtrl: NavController,
-              public databaseService: DatabaseService) {
-    this.load();
-  }
+    /**
+     *  The configuration the view is based off of
+     */
+    userConfig = new UserConfig();
 
-  load(){
-    var settings = this.databaseService.get("settings");
-    if(settings && settings.age && settings.weight) {
-      this.age = settings["age"];
-      this.weight = settings["weight"];
-      this.heightft = settings["heightft"];
-      this.heightin = settings["heightin"];
-      this.gender = settings["gender"];
+    /**
+     * Refresh the settings from the persisted settings
+     */
+    load(): void {
+        var newSettings = this.configService.get("settings");
+        if (newSettings) this.userConfig = newSettings
     }
-  }
 
-  changed(){
-    console.log("Setting was changed")
-    var settings = {
-      age: this.age,
-      weight: this.weight,
-      heightft: this.heightft,
-      heightin: this.heightin,
-      gender: this.gender
+    /**
+     * On change of settings, persist settings to disk
+     */
+    changed(): void {
+        console.log("Setting was changed")
+        this.configService.setConfig(this.userConfig);
     }
-    this.databaseService.set("settings", settings);
-  }
 
-  // these are the default settings but then they are loaded from disk
-  age=30;
-  weight=150;
-  heightft=5;
-  heightin=10;
-  gender="male";
+    /**
+     * On clear button clicked, clear storage
+     */
+    clear(): void {
+        window.localStorage.clear();
+    }
+    
+    /**
+    * This is the configService, which is used to handle loading and saving the configuration to memory.
+    *
+    * Note that it is injected into the page via dependency injection
+    */
+    configService: ConfigService
+
+    constructor(configService: ConfigService) {
+        this.configService = configService;
+        this.load();
+    }
 }
