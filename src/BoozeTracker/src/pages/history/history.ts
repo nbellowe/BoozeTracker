@@ -84,12 +84,31 @@ export class HistoryPage {
      * This method loads drink history, refreshing it.
      */
     load(): void {
-        this.lineChartData = [{ data: [], label: 'Drinks per Day' }];
+
+        // tale the last 30 drinks and strip off leading zeros.
+        var newArr = []
+        var addToArray = false;
+        var oldArr = this.drinkService.getLast30Days();
+        for(var i = 0; i < oldArr.length; i++){
+            var cur = oldArr[i];
+            if(addToArray){
+              newArr.push(cur);
+            }
+            else {
+              if(cur > 0){
+                newArr.push(cur)
+                addToArray = true;
+              }
+            }
+        }
+        this.lineChartData[0].data = newArr;
+
         this.lineChartLabels = [];
-        for (let i = 0; i < 31; i++) {
+        for (let i = 0; i < this.lineChartData[0].data.length; i++) {
             this.lineChartLabels[i] = "Day " + (i + 1) // set label
         }
-        this.lineChartData[0].data = this.drinkService.getLast30Days()
+
+
         console.log(this.lineChartData[0].data)
     }
 }
