@@ -11,6 +11,9 @@ import * as $ from "jquery";
 })
 export class HomePage {
 
+    // the current BAC to display
+    BAC: number = 0;
+
     // the last percentage the beer glass is at
     lastPercent = 0.0
 
@@ -82,9 +85,57 @@ export class HomePage {
         //calculate level
         var level = this.calculateBeerLevel(lastDrinks);
 
+        var newBAC = this.calculateBAC(lastDrinks);
+        this.BAC = newBAC;
+
         //move beer to be at that level
         this.setPercent(level)
     }
+
+    /**
+     * Calculate the BAC given the last drinks
+     */
+     calculateBAC(lastDrinks: DrinkInfo[]): number{
+       // calculate drunkenness based on bucketed weights for time since drink (scaling by drink's strength)
+       var drunkenness = 0;
+
+       //todo, drunkenness of the current user need to scale up and down depending on size/gender
+       var userScale = 1;
+
+       var currentTime = Date.now();
+       for (var i = 0; i < lastDrinks.length; i++) {
+           var drink = lastDrinks[i];
+           var drinkTime = drink.time;
+           var hrsSinceLastDrink = (currentTime - drinkTime) / (1000 * 60 * 60)
+           var drinkStrength = drink.getStrength()
+
+           console.log(hrsSinceLastDrink)
+           if (hrsSinceLastDrink < (1 / 60)) //fill drink up if drink in last 5 min
+               drunkenness += 1 * drinkStrength
+           if (hrsSinceLastDrink < (5 / 60))
+               drunkenness += .75 * drinkStrength
+           else if (hrsSinceLastDrink < (1 / 4))
+               drunkenness += .4 * drinkStrength
+           else if (hrsSinceLastDrink < 1)
+               drunkenness += .2 * drinkStrength
+           else if (hrsSinceLastDrink < 3)
+               drunkenness += .1 * drinkStrength //fill drink up .15 ...
+           else if (hrsSinceLastDrink < 6)
+               drunkenness += .05 * drinkStrength //fill drink up 1/10 for every drink in last 6 hours
+       }
+
+       drunkenness = drunkenness * userScale; //scale up or down drunkenness based on user
+
+       if (drunkenness > 1) {
+           console.log("Too much!! ", drunkenness)
+           // oh no too drunk?
+
+           drunkenness = 1 //always return between 0 and 1
+       }
+
+       console.info("Used last drinks to calculate 'drunkenness'", lastDrinks, drunkenness)
+       return drunkenness
+     }
 
     /**
      * Calculate the percentage to fill the glass based on an array of recent drinks
