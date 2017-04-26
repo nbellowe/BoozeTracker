@@ -25,6 +25,7 @@ export class BoozeTrackerApp {
                   handler: () => {
                     var alert = alertCtrl.create({
                       title: "Great! Drink responsibly.",
+                      subTitle: "This app holds no guarantee of accuracy",
                       buttons: ["Ok"]
                     })
                     alert.present();
