@@ -10,7 +10,9 @@ Repository.
   - The application code is scaffolded by `ionic`'s new project command `ionic start` in directory "BoozeTracker".
 
 
-The documentation is located in /
+The documentation is located in /docs
+  - generate with `typedoc --out ..\..\docs\ .` from the src directory.
+  
 The source is in:
 - `/src/BoozeTracker/`
   - The source code is in:
@@ -23,7 +25,7 @@ The source is in:
     - `/src/BoozeTracker/src/resources/`
 
 
+    The build is in:
 
 
-The build is in:
 - `BoozeTracker/www/`
