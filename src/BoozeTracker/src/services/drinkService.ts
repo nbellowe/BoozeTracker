@@ -113,6 +113,10 @@ export class DrinkInfo {
     getStrength(): number {
         return (this.percent * this.size) / DrinkInfo.BEER_STRENGTH;
     }
+
+    getAlcoholOunce(): number {
+      return this.percent*this.size/100
+    }
 }
 
 /**

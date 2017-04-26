@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ModalController } from 'ionic-angular';
 import { DrinkService, DrinkInfo } from "../../services/drinkService"
+import { ConfigService } from "../../services/configService"
 import { AddDrinkPage } from './modalDrink';
 
 import * as $ from "jquery";
@@ -96,45 +97,48 @@ export class HomePage {
      * Calculate the BAC given the last drinks
      */
      calculateBAC(lastDrinks: DrinkInfo[]): number{
-       // calculate drunkenness based on bucketed weights for time since drink (scaling by drink's strength)
-       var drunkenness = 0;
 
        //todo, drunkenness of the current user need to scale up and down depending on size/gender
        var userScale = 1;
 
+       var ounces = 0;
+       var minHours = undefined;
+       var BAC = 0;
+
+
        var currentTime = Date.now();
+       //Get number of ounces of acohol in the last 4 hours
        for (var i = 0; i < lastDrinks.length; i++) {
            var drink = lastDrinks[i];
            var drinkTime = drink.time;
-           var hrsSinceLastDrink = (currentTime - drinkTime) / (1000 * 60 * 60)
-           var drinkStrength = drink.getStrength()
+           var hrsSinceLastDrink = (currentTime - drinkTime) / (1000 * 60 * 60);
+           var drinkStrength = drink.getStrength();
 
-           console.log(hrsSinceLastDrink)
-           if (hrsSinceLastDrink < (1 / 60)) //fill drink up if drink in last 5 min
-               drunkenness += 1 * drinkStrength
-           if (hrsSinceLastDrink < (5 / 60))
-               drunkenness += .75 * drinkStrength
-           else if (hrsSinceLastDrink < (1 / 4))
-               drunkenness += .4 * drinkStrength
-           else if (hrsSinceLastDrink < 1)
-               drunkenness += .2 * drinkStrength
-           else if (hrsSinceLastDrink < 3)
-               drunkenness += .1 * drinkStrength //fill drink up .15 ...
-           else if (hrsSinceLastDrink < 6)
-               drunkenness += .05 * drinkStrength //fill drink up 1/10 for every drink in last 6 hours
-       }
+           if (hrsSinceLastDrink < 4){
+             console.log(hrsSinceLastDrink, drink)
+             if(minHours == undefined || minHours > hrsSinceLastDrink){
+               minHours = hrsSinceLastDrink;
+             }
+             ounces += drink.getAlcoholOunce();
+           }
+         }
 
-       drunkenness = drunkenness * userScale; //scale up or down drunkenness based on user
+         var userConfig = this.configService.getConfig();
+        console.log(ounces)
+         var gender = userConfig.gender
+         var genderCoef = 0.7;
+         if(gender == "male"){
+           genderCoef = 0.73
+         }
+         else{
+           genderCoef = 0.66
+         }
+         if(minHours == undefined){
+           minHours = 0;
+         }
 
-       if (drunkenness > 1) {
-           console.log("Too much!! ", drunkenness)
-           // oh no too drunk?
-
-           drunkenness = 1 //always return between 0 and 1
-       }
-
-       console.info("Used last drinks to calculate 'drunkenness'", lastDrinks, drunkenness)
-       return drunkenness
+        BAC = (ounces * 5.14)/(genderCoef*userConfig.weight) - (0.15*minHours);
+        return BAC
      }
 
     /**
@@ -213,7 +217,7 @@ export class HomePage {
     */
     modalCtrl: ModalController
 
-    constructor(drinkService: DrinkService, modalCtrl: ModalController) {
+    constructor(drinkService: DrinkService, modalCtrl: ModalController, public configService: ConfigService) {
 
         this.drinkService = drinkService;
         this.modalCtrl = modalCtrl;
