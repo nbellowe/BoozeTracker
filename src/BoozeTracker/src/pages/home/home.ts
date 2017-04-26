@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ModalController } from 'ionic-angular';
+import { ModalController, AlertController } from 'ionic-angular';
 import { DrinkService, DrinkInfo } from "../../services/drinkService"
 import { ConfigService } from "../../services/configService"
 import { AddDrinkPage } from './modalDrink';
@@ -74,6 +74,17 @@ export class HomePage {
 
             // now set the percent to fill the beer glass based on how recent / strong the drinks in lastDrinks are...
             this.updateBeerLevel()
+
+            var lastDrinks = this.drinkService.getLast20Drinks();
+            var newBAC = this.calculateBAC(lastDrinks);
+            if(newBAC > .1){
+              var alert = this.alertController.create({
+                title: "You've had too much",
+                subTitle: "BAC at " + newBAC.toFixed(3)+ "%",
+                buttons:["Dismiss"]
+              })
+              alert.present();
+            }
         });
     }
 
@@ -217,7 +228,7 @@ export class HomePage {
     */
     modalCtrl: ModalController
 
-    constructor(drinkService: DrinkService, modalCtrl: ModalController, public configService: ConfigService) {
+    constructor(drinkService: DrinkService, modalCtrl: ModalController, public configService: ConfigService, public alertController: AlertController) {
 
         this.drinkService = drinkService;
         this.modalCtrl = modalCtrl;
