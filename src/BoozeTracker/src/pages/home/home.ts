@@ -13,7 +13,7 @@ import * as $ from "jquery";
 export class HomePage {
 
     // the current BAC to display
-    BAC: number = 0;
+    BAC: string = "0";
 
     // the last percentage the beer glass is at
     lastPercent = 0.0
@@ -87,7 +87,7 @@ export class HomePage {
         var level = this.calculateBeerLevel(lastDrinks);
 
         var newBAC = this.calculateBAC(lastDrinks);
-        this.BAC = newBAC;
+        this.BAC = newBAC.toFixed(2);
 
         //move beer to be at that level
         this.setPercent(level)
