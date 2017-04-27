@@ -13,7 +13,7 @@ import * as $ from "jquery";
 export class HomePage {
 
     // the current BAC to display
-    BAC: string = "0";
+    BAC: string = "0.00";
 
     // the last percentage the beer glass is at
     lastPercent = 0.0

@@ -6,9 +6,6 @@
 
 <ion-content class="no-scroll">
   <div class="beer-placeholder">
-    <div id="test">
-      {{ BAC }}
-    </div>
     <div id="container">
       <div class="pour"></div>
       <div id="beaker">
@@ -32,6 +29,17 @@
     </div>
   </div>
   <div>
-    <button ion-button (click)="addDrink()" class="centered-button">Add Drink</button>
+    <table id="table-bottom">
+      <tr>
+        <td id="test">
+          <div>
+            Current BAC:<br>{{ BAC }}%
+          </div>
+        </td>
+        <td>
+          <button ion-button (click)="addDrink()" class="centered-button">Add Drink</button>
+        </td>
+      </tr>
+    </table>
   </div>
 </ion-content>
