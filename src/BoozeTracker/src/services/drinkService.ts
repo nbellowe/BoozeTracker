@@ -6,15 +6,17 @@ export class DrinkService extends DatabaseService {
      * Get the last 30 days history of drinks
      * @return {number[]} An array of the number of drinks per today for the last 30 days, where index 0 refers to 30 days ago, and index 30 refers to the current day.
      */
-    getLast30Days(): number[] {
+    getLast30Days(cb: (d: number[]) => void) {
         var today = Math.floor((new Date()).getTime() / (1000 * 60 * 60 * 24))
 
         var last30: number[] = []
-        var history: any = this.get("history") || {};
-        for (var i = 0; i < 31; i++) {
-            last30[i] = history[today - (30 - i)] || 0
-        }
-        return last30;
+        this.get("history", history => {
+            history =  history || {};
+            for (var i = 0; i < 31; i++) {
+                last30[i] = history[today - (30 - i)] || 0
+            }
+            cb(last30);
+        })
     }
 
     /**
@@ -38,10 +40,10 @@ export class DrinkService extends DatabaseService {
      */
     incrementToday(): void {
         var today = Math.floor((new Date()).getTime() / (1000 * 60 * 60 * 24))
-        this.get("history", hist => {
-          hist = hist || {};
-          hist[today] = (hist[today] || 0) + 1
-          this.set("history", hist)
+        this.get("history", (hist) => {
+            hist = hist || {};
+            hist[today] = (hist[today] || 0) + 1
+            this.set("history", hist)
         })
     }
 
@@ -49,26 +51,26 @@ export class DrinkService extends DatabaseService {
      * Get the last 20 drinks that were persisted
      * @return {DrinkInfo[]} The last 20 drinks that were persisted
      */
-    getLast20Drinks(cb: (DrinkInfo[]) => void): DrinkInfo[] {
-        var hist = this.get("last20", hist => {
-          hist = hist || []  //the history or an empty array if hist is falsy
-          cb(hist.map(DrinkFactory.clone))
-        })
-    }
+    getLast20Drinks(cb: (d: DrinkInfo[]) => void) {
+    this.get("last20", hist => {
+        hist = hist || []  //the history or an empty array if hist is falsy
+        cb(hist.map(DrinkFactory.clone))
+    })
+}
 
-    /**
-     * Add a drink to the last 20 array
-     * @param  {DrinkInfo} drink Drink to add
-     */
-    addDrink(drink: DrinkInfo) {
-        console.log("Adding drink to last 20 drinks", drink)
-        this.getLast20Drinks((last20: any) => {
-          if (last20.length >= 20) last20.shift(); //remove oldest drink so never more than 20
-          last20.push(drink) //add new drink
+/**
+ * Add a drink to the last 20 array
+ * @param  {DrinkInfo} drink Drink to add
+ */
+addDrink(drink: DrinkInfo) {
+    console.log("Adding drink to last 20 drinks", drink)
+    this.getLast20Drinks((last20: any) => {
+        if (last20.length >= 20) last20.shift(); //remove oldest drink so never more than 20
+        last20.push(drink) //add new drink
 
-          this.set("last20", last20)
-        });
-    }
+        this.set("last20", last20)
+    });
+}
 }
 
 export class DrinkFactory {
@@ -117,7 +119,7 @@ export class DrinkInfo {
     }
 
     getAlcoholOunce(): number {
-      return this.percent*this.size/100
+        return this.percent * this.size / 100
     }
 }
 
