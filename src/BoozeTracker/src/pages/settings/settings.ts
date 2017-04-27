@@ -16,8 +16,9 @@ export class SettingsPage {
      * Refresh the settings from the persisted settings
      */
     load(): void {
-        var newSettings = this.configService.get("settings");
-        if (newSettings) this.userConfig = newSettings
+        var newSettings = this.configService.get("settings", newSettings => {
+          if (newSettings) this.userConfig = newSettings
+        });
     }
 
     /**
@@ -34,7 +35,7 @@ export class SettingsPage {
     clear(): void {
         window.localStorage.clear();
     }
-    
+
     /**
     * This is the configService, which is used to handle loading and saving the configuration to memory.
     *

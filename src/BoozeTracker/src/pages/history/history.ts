@@ -84,31 +84,34 @@ export class HistoryPage {
      * This method loads drink history, refreshing it.
      */
     load(): void {
+        this.drinkService.getLast30Days(oldArr =>{
 
-        // tale the last 30 drinks and strip off leading zeros.
-        var newArr = []
-        var addToArray = false;
-        var oldArr = this.drinkService.getLast30Days();
-        for(var i = 0; i < oldArr.length; i++){
-            var cur = oldArr[i];
-            if(addToArray){
-              newArr.push(cur);
-            }
-            else {
-              if(cur > 0){
-                newArr.push(cur)
-                addToArray = true;
+          // tale the last 30 drinks and strip off leading zeros.
+          var newArr = []
+          var addToArray = false;
+
+          for(var i = 0; i < oldArr.length; i++){
+              var cur = oldArr[i];
+              if(addToArray){
+                newArr.push(cur);
               }
-            }
-        }
-        this.lineChartData[0].data = newArr;
+              else {
+                if(cur > 0){
+                  newArr.push(cur)
+                  addToArray = true;
+                }
+              }
+          }
+          this.lineChartData[0].data = newArr;
 
-        this.lineChartLabels = [];
-        for (let i = 0; i < this.lineChartData[0].data.length; i++) {
-            this.lineChartLabels[i] = "Day " + (i + 1) // set label
-        }
+          this.lineChartLabels = [];
+          for (let i = 0; i < this.lineChartData[0].data.length; i++) {
+              this.lineChartLabels[i] = "Day " + (i + 1) // set label
+          }
 
 
-        console.log(this.lineChartData[0].data)
+          console.log(this.lineChartData[0].data)
+        });
+
     }
 }

@@ -38,20 +38,22 @@ export class DrinkService extends DatabaseService {
      */
     incrementToday(): void {
         var today = Math.floor((new Date()).getTime() / (1000 * 60 * 60 * 24))
-        var hist = this.get("history") || {};
-
-        hist[today] = (hist[today] || 0) + 1
-        this.set("history", hist)
+        this.get("history", hist => {
+          hist = hist || {};
+          hist[today] = (hist[today] || 0) + 1
+          this.set("history", hist)
+        })
     }
 
     /**
      * Get the last 20 drinks that were persisted
      * @return {DrinkInfo[]} The last 20 drinks that were persisted
      */
-    getLast20Drinks(): DrinkInfo[] {
-        var hist = this.get("last20") || []; //the history or an empty array if hist is falsy
-
-        return hist.map(DrinkFactory.clone)
+    getLast20Drinks(cb: (DrinkInfo[]) => void): DrinkInfo[] {
+        var hist = this.get("last20", hist => {
+          hist = hist || []  //the history or an empty array if hist is falsy
+          cb(hist.map(DrinkFactory.clone))
+        })
     }
 
     /**
@@ -60,12 +62,12 @@ export class DrinkService extends DatabaseService {
      */
     addDrink(drink: DrinkInfo) {
         console.log("Adding drink to last 20 drinks", drink)
-        var last20 = this.getLast20Drinks();
+        this.getLast20Drinks((last20: any) => {
+          if (last20.length >= 20) last20.shift(); //remove oldest drink so never more than 20
+          last20.push(drink) //add new drink
 
-        if (last20.length >= 20) last20.shift(); //remove oldest drink so never more than 20
-        last20.push(drink) //add new drink
-
-        this.set("last20", last20)
+          this.set("last20", last20)
+        });
     }
 }
 
