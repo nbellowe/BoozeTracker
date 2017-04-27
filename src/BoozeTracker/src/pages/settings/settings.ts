@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { ConfigService, UserConfig } from "../../services/configService"
 
+declare var localforage: any; 
+
 @Component({
     selector: 'page-settings',
     templateUrl: 'settings.html'
@@ -33,7 +35,7 @@ export class SettingsPage {
      * On clear button clicked, clear storage
      */
     clear(): void {
-        window.localStorage.clear();
+        localforage.clear();
     }
 
     /**
