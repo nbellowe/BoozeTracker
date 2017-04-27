@@ -1,3 +1,5 @@
+declare var localforage: any;
+
 export class DatabaseService {
 
     /**
@@ -6,7 +8,7 @@ export class DatabaseService {
      * @param  {any} value Value to set key to
      */
     set(key: string, value: any): void {
-        window.localStorage.setItem(key, JSON.stringify(value))
+        localforage.setItem(key, JSON.stringify(value))
     }
 
     /**
@@ -14,9 +16,11 @@ export class DatabaseService {
      * @param  {string} key Key to get value for
      * @return {any}        Value of key in database
      */
-    get(key: string): any {
-        var item = window.localStorage.getItem(key);
-        console.log("Value for ", key, "is", item)
-        return JSON.parse(item)
+    get(key: string, cb: any => void): any {
+        localforage.getItem(key, (item) => {
+          console.log("Value for ", key, "is", item)
+          cb(JSON.parse(item))
+        });
+
     }
 }

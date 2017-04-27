@@ -75,16 +75,20 @@ export class HomePage {
             // now set the percent to fill the beer glass based on how recent / strong the drinks in lastDrinks are...
             this.updateBeerLevel()
 
-            var lastDrinks = this.drinkService.getLast20Drinks();
-            var newBAC = this.calculateBAC(lastDrinks);
-            if(newBAC > .1){
-              var alert = this.alertController.create({
-                title: "You've had too much",
-                subTitle: "BAC at " + newBAC.toFixed(3)+ "%",
-                buttons:["Dismiss"]
-              })
-              alert.present();
-            }
+            this.drinkService.getLast20Drinks(lastDrinks => {
+              this.calculateBAC(lastDrinks, newBAC => {
+                if(newBAC > .1){
+                  var alert = this.alertController.create({
+                    title: "You've had too much",
+                    subTitle: "BAC at " + newBAC.toFixed(3)+ "%",
+                    buttons:["Dismiss"]
+                  })
+                  alert.present();
+                }
+              });
+
+            });
+
         });
     }
 
@@ -92,22 +96,22 @@ export class HomePage {
      * Update the beer level by calling persisted data,  calculating the level to fill the glass, and then filling that glass
      */
     updateBeerLevel(): void {
-        var lastDrinks = this.drinkService.getLast20Drinks();
+        var lastDrinks = this.drinkService.getLast20Drinks( lastDrinks => {
+          //calculate level
+          var level = this.calculateBeerLevel(lastDrinks);
 
-        //calculate level
-        var level = this.calculateBeerLevel(lastDrinks);
+          var newBAC = this.calculateBAC(lastDrinks);
+          this.BAC = newBAC.toFixed(2);
 
-        var newBAC = this.calculateBAC(lastDrinks);
-        this.BAC = newBAC.toFixed(2);
-
-        //move beer to be at that level
-        this.setPercent(level)
-    }
+          //move beer to be at that level
+          this.setPercent(level)
+        });
+      }
 
     /**
      * Calculate the BAC given the last drinks
      */
-     calculateBAC(lastDrinks: DrinkInfo[]): number{
+     calculateBAC(lastDrinks: DrinkInfo[], cb: number=>void): number{
 
        //todo, drunkenness of the current user need to scale up and down depending on size/gender
        var userScale = 1;
@@ -134,22 +138,25 @@ export class HomePage {
            }
          }
 
-         var userConfig = this.configService.getConfig();
-        console.log(ounces)
-         var gender = userConfig.gender
-         var genderCoef = 0.7;
-         if(gender == "male"){
-           genderCoef = 0.73
-         }
-         else{
-           genderCoef = 0.66
-         }
-         if(minHours == undefined){
-           minHours = 0;
-         }
+         var userConfig = this.configService.getConfig(userConfig => {
 
-        BAC = (ounces * 5.14)/(genderCoef*userConfig.weight) - (0.15*minHours);
-        return BAC
+          console.log(ounces)
+           var gender = userConfig.gender
+           var genderCoef = 0.7;
+           if(gender == "male"){
+             genderCoef = 0.73
+           }
+           else{
+             genderCoef = 0.66
+           }
+           if(minHours == undefined){
+             minHours = 0;
+           }
+
+           BAC = (ounces * 5.14)/(genderCoef*userConfig.weight) - (0.15*minHours);
+            cb(BAC)
+         });
+
      }
 
     /**

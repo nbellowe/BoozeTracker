@@ -6,9 +6,10 @@ export class ConfigService extends DatabaseService {
      * Gets the persisted user configuration
      * @return {UserConfig} The last persisted configuration
      */
-    getConfig(): UserConfig {
-        var config = this.get("settings");
-        return new UserConfig(config); // clone from plain object into UserConfig;
+    getConfig(cb: UserConfig => void): UserConfig {
+        var config = this.get("settings", config => {
+          cb(new UserConfig(config)) // clone from plain object into UserConfig;
+        });
     }
 
     /**
