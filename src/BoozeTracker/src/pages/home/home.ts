@@ -156,7 +156,7 @@ export class HomePage {
             }
 
             BAC = (ounces * 5.14) / (genderCoef * userConfig.weight) - (0.15 * minHours);
-            cb(BAC)
+            cb(Math.max(0,BAC))
         });
 
     }
